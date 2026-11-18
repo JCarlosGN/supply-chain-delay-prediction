@@ -16,4 +16,6 @@ Este projeto de **Data Mining e Machine Learning** tem como objetivo analisar a 
 ## 📈 3. Ingestão e Inspeção Inicial dos Dados
 A base de dados utilizada contém **180.519 registros e 53 variáveis** estruturadas cobrindo transações comerciais, datas de envio real vs. agendado e status de entrega.
 
+---
+
 ![Ingestão de Dados](images/01_ingestao_dados.png)
