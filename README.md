@@ -28,3 +28,14 @@ A análise da variável alvo (`Late_delivery_risk`) revelou um cenário crítico
 * **Gargalo nos Fretes Expressos:** Ao cruzar o risco com a modalidade de envio (`Shipping Mode`), identificou-se que a categoria **First Class** concentra uma taxa de risco de **95,32%**, evidenciando falhas severas no cumprimento de SLAs prioritários. Em contrapartida, a modalidade **Standard Class** apresenta a maior previsibilidade, com **61,93%** das entregas sem risco.
 
 ![Análise Exploratória - Risco de Atraso](images/02_eda_risco_atraso.png)
+
+---
+
+## 🧹 5. Limpeza de Dados e Engenharia de Features
+
+Para garantir a integridade estatística do modelo preditivo e evitar *Data Leakage* (vazamento de informações futuras que não existem no momento do despacho), a base passou por um rigoroso processo de higienização, reduzindo a dimensionalidade de **53 para 28 variáveis** sem perda de registros (180.519 linhas mantidas e 0 valores nulos):
+
+* **Prevenção de Data Leakage:** Remoção de variáveis conhecidas apenas após o envio ou entrega (`Days for shipping (real)`, `Delivery Status`, `Order Status`, `shipping date`).
+* **Tratamento de Nulos e Privacidade (LGPD):** Descarte de colunas inviáveis (`Product Description` com 100% de nulos e `Order Zipcode` com 86,2% de nulos) e remoção de dados pessoais sensíveis (e-mails, senhas, endereços exatos) e identificadores únicos (IDs).
+* **Eliminação de Redundâncias:** Remoção de colunas financeiras espelhadas para evitar multicolinearidade.
+* **Engenharia de Features Temporais:** Extração de `Order_Month` (mês), `Order_DayOfWeek` (dia da semana) e `Order_Hour` (hora do pedido) a partir do timestamp original para capturar gargalos operacionais de virada de turno e fins de semana.
