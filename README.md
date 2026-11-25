@@ -62,3 +62,16 @@ Para preparar os dados para os algoritmos de classificação sem introduzir vaza
 | **HistGradientBoostingClassifier** | 72,19% | 72,22% | 0,86 | 0,59 | 0,70 |
 
 - **Diagnóstico Técnico:** Ambos os modelos mantiveram estabilidade entre treino e teste (ausência de *overfitting*). O ganho moderado (~1,11 p.p.) ao migrar de um modelo linear para um algoritmo baseado em árvores indica que o próximo salto de performance depende diretamente de engenharia de novas features e análise de importância das variáveis, além do ajuste do limiar de decisão (*threshold*) conforme o custo operacional de falsos negativos (*Recall* atual de 0,59 na classe de atraso).
+
+---
+
+## 🔍 7. Importância de Variáveis, Engenharia de Features e Ajuste de Threshold
+
+Após a comparação inicial entre `LogisticRegression` e `HistGradientBoostingClassifier`, foram conduzidas três verificações diagnósticas sobre o conjunto de teste:
+
+- **Importância por Permutação (*Permutation Importance*):** As variáveis ligadas à modalidade de envio (`Shipping Mode`) e ao horário do pedido (`Order_Hour`) concentraram os maiores impactos na queda de desempenho quando embaralhadas, enquanto variáveis financeiras e de catálogo isoladas apresentaram importância próxima de zero ou levemente negativa.
+- **Teste de Novas Features:** As variáveis derivadas `Is_Weekend_Order`, `Order_Shift` e `Shipping_x_SchedDays` foram avaliadas no `HistGradientBoostingClassifier` sem vazamento de dados, resultando em acurácia de `0.7227` no teste (ganho prático nulo frente a `0.7222`) e *Recall* inalterado (`0.59`) para a classe `1`.
+- **Análise de Limiar de Decisão (*Threshold*):** A variação do corte sobre `predict_proba` evidenciou o *trade-off* operacional da classe `1` (risco de atraso):
+  - **Threshold `0.50`:** Acurácia `0.7222` | Precision `0.8579` | Recall `0.5912` | F1 `0.7000`
+  - **Threshold `0.40`:** Acurácia `0.7082` | Precision `0.7191` | Recall `0.7677` | F1 `0.7426`
+- **Critério Operacional:** A escolha entre `0.50` (menor volume de alertas falsos e menor carga imediata de intervenção) e `0.40` (maior captura de atrasos reais, com ~28,1% de falsos positivos entre os alertas) depende do custo relativo entre ação preventiva indevida e falha de SLA/atraso na operação.
